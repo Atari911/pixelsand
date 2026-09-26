@@ -1,100 +1,89 @@
 # PixelSand
 
-A browser-based falling-sand simulator with a working digital logic layer, built as a single self-contained HTML file.
+A sandbox where sand behaves like sand, water finds its level, plants grow toward the light — and, if you want it to, the whole thing runs on circuitry you built yourself.
 
-It started as a particle sandbox and grew a computer. Sand, water and fire behave the way you would expect; alongside them are wires, gates, counters, serial buses and programmable chips, so a board can be a landscape, a circuit, a pinball table, or all three at once.
+It begins as a falling-sand toy. Pour sand, flood it with water, set it on fire, watch what happens. But underneath the same grid there is a working electrical layer, a colony of animals that actually live there, and enough machinery to build a functioning pinball table. You can stay at the level of pouring sand forever, or you can end up wiring a scoreboard. Both are the point.
 
-**Current version:** v13.244 · **Board:** 320 × 200 cells · **Elements:** 226 across 19 categories · **Single file:** ~13 MB, no build step, no dependencies to install.
-
----
-
-## Running it
-
-Open the `.html` file in a browser. That is the whole process — it is precompiled ES5 in one file, with no server, bundler or network access required.
-
-Desktop and mobile are both supported, including touch placement, a floating side panel, and a probe tool for inspecting cells on a phone.
+**One file. Open it in a browser. Nothing to install.**
 
 ---
 
-## What is in it
+## What you can do with it
 
-### Materials and physics
-Powders, liquids and gases with density-based interaction, so oil floats on water and sand displaces both. Fire spreads and consumes, ice melts, plants grow toward light, and unsupported material collapses. Soil arches over a tunnel rather than filling it instantly, which is what makes underground structures hold.
+### Play with materials
 
-### Life
-27 creature simulations — birds, fish, bats, ants, spiders and more — each with its own movement, feeding and nesting behaviour. Ants dig real tunnels and pile the spoil outside the entrance. Birds perch, flee and scatter seed. A dollhouse mode adds residents with task chains, furniture affordances and multi-storey pathing.
+226 different things to place, and they all interact. Sand piles and slides. Water flows, pools and evaporates into steam. Oil floats on water because it is lighter; mercury sinks under both. Lava sets fire to wood and hardens into stone. Acid eats through almost anything. Snow melts, ice refreezes, ash settles.
 
-### Electronics
-A full electrical layer on its own grid: wires, diodes, capacitors, transistors, logic gates, counters, latches and oscillators, with power propagated by a breadth-first flood each frame. Complex enough that a PDP-11-style CPU has been attempted in it using gear primitives.
+Liquids include water, oil, acid, lava, honey, blood, poison and mercury — and they each behave differently when they meet.
 
-**Serial bus** — ports and taps carry six independent lines on any of 16 channels, letting distant parts of a board talk without wiring every connection by hand.
+### Grow things
 
-### Chips
-Sixteen programmable chips, including:
+Plant a seed and it grows. Trees put out trunks, branches and leaves, drop fruit, age and eventually die. Vines climb. Grass spreads across soil. Coral and kelp sway underwater. Mushrooms sprout in the damp and release spores.
 
-| Chip | Purpose |
-|---|---|
-| `PINBALL_CHIP` | Score, ball count, tilt, game state — a whole table's logic |
-| `VIDEO_CHIP` | Six text screens, selected by pin priority or latched |
-| `SOUND` / `MUSIC` / `THEME` | Effects, one-shot cues and looping scores, four to five banks each |
-| `SOUND_MANIFOLD` | Six isolated channels with per-channel pulse counts |
-| `TIMER_CHIP` | Four outputs cycling over 5–60s, for rotating displays |
-| `GAME_CHIP` | Reads the pinball game counter off a broadcast channel |
-| `CASCADE` / `STEPPER` / `CALC` / `SCORE` | Sequencing, stepping and arithmetic |
+Give a plant light, water and soil and it thrives. Take one away and watch what it does instead.
 
-Chips rotate and flip, carry their settings through copy and paste, and are configured in place by shift-clicking.
+### Fill it with life
 
-### Audio
-A synthesised sound system — no samples. Effects, musical cues and looping multi-part themes, all generated through the Web Audio API and scheduled ahead of time so playback survives frame-rate dips.
+Twenty-seven kinds of creature, each with its own behaviour rather than a shared wandering routine.
 
-### Pinball
-Flippers, bumpers, slingshots, drop targets, ramps, one-way gates and a plunger, with real ball physics including spin, restitution per surface and tilt. Combined with the chips, a complete working table can be built on a board.
+Birds flee, perch in trees and scatter seed that grows where it lands. Fish school and dart from predators. Bats roost on ceilings at dawn and hunt at night. Spiders spin webs and wait. Rabbits, snakes, crabs, orcas, butterflies and fireflies each live their own way.
 
----
+**Ants dig.** Give them sand and dirt and a queen, and they excavate a real nest — tunnels branching downward, spoil piled outside the entrance, the queen laying deep inside. Nobody scripted the tunnel shapes; they come out of how the ants behave.
 
-## Working on it
+### Build a terrarium
 
-The project is a single compiled HTML file. Edits are applied to that file directly, and each change ships as a new numbered version with a changelog entry at the top of the file.
+Seal a space with glass, fill it with soil, plant it, and add animals. The glass holds. The plants grow toward the light. The creatures live inside it and cannot get out.
 
-### House rules
+### Build machines
 
-These exist because breaking them has cost real debugging time:
+There is a complete electrical layer: wires, switches, lamps, batteries, diodes, capacitors, motors, gears and logic gates. Power flows through wires in real time and lights what it reaches.
 
-- **Never add code inside `simulateMachines`.** It is the hot path and additions there have caused severe frame drops through JIT deoptimisation.
-- **Keep the save format backward compatible.** Old boards must keep loading.
-- **Follow the element registration checklist.** See `ELEMENT_TEMPLATE.js`.
+From there it escalates. Counters, latches, oscillators, decoders and shift registers. A serial bus so distant parts of a board can talk without running wires everywhere. Programmable chips that keep score, play music, drive text displays or time a sequence.
 
-### Adding an element
+People have built working calculators in it. Someone tried a CPU.
 
-`ELEMENT_TEMPLATE.js` is a commented skeleton listing every registration point, organised by what the element actually does, with the silent-failure traps called out. The short version:
+### Build a pinball table
 
-Always needed — id, registry entry, palette, placement, render, hover.
-Then, depending on the element: physics class and density; `IS_SOLID` **and** `SMALL_CREATURE_BLOCKED` (they are separate lists); `ballBlocked` if pinballs hit it; **both** power predicates if it conducts; a BFS seed pass if it originates power; and for a configurable chip, save, load, stamp capture, all eight stamp passthroughs, and the mobile describer.
+This is where everything comes together. Flippers, bumpers, slingshots, drop targets, ramps, one-way gates and a plunger, with ball physics that models spin and gives every surface its own bounce.
 
-### Things that fail silently
+Then wire it up: a chip that tracks score, balls and tilt; a display that cycles through score and high score while nobody is playing; sound effects on every bumper; a theme tune that changes when the game starts. A whole cabinet's worth of logic, built out of parts on the board.
 
-Worth knowing before you spend an afternoon on one:
+### Make noise
 
-- `IS_SOLID` does **not** make an element block animals — that is a separate list.
-- Registering power in one of the two predicates lights wires but leaves capacitors blind.
-- A source without a seed pass never starts a flood, so its output looks dead.
-- A chip that drives `lf` cannot also store its layout there — pack it into `cv`.
-- A helper defined in one closure and called from another parses fine and throws at runtime. Check the enclosing **function**, not the brace depth.
-- A new chip missing from `_pxsDescribeCell` shows nothing on mobile and reports no error.
+Every sound is generated, not sampled. Zaps, warbles, explosions, jackpot fanfares, synthesised speech. Musical cues for victory, game over, level up. And looping background themes with names like Dark, Chase, Dragonfire and Nebula, in fantasy, electronic and science-fiction flavours.
 
-### Verifying a change
+Wire a sound to a bumper and it plays when the ball hits.
 
-Syntax checking catches almost none of the failures above. What works:
+### Run a dollhouse
 
-1. Parse the extracted script (`new Function(src)`) — catches typos only.
-2. Confirm every new identifier exists.
-3. Confirm each new helper is *reachable* from its call sites.
-4. Run the actual logic against a synthetic board and check the behaviour, not just that the code is present.
-
-Step 4 is the one that matters. A gate whose pass/block rule tested perfectly in isolation still failed on a real table, because balls rarely travel in a straight line.
+Build rooms, add furniture, and residents move in. They have places to be and things to do — they use beds, chairs and kitchens, move between floors, and work through chains of tasks rather than milling about.
 
 ---
 
-## Saves
+## Getting started
 
-Boards save as `.pxs` files: JSON with run-length-encoded grid layers, plus per-chip configuration maps. Stamps (reusable copied regions) live in a separate library and carry chip settings through rotation and flipping.
+Open the file in a browser. You will see the board, a palette of everything you can place, and controls for speed and pausing.
+
+**Try this first:** pick Sand, draw across the middle of the screen, and watch it fall and pile. Now pick Water and pour some on top. Then Oil, and see it float. That is the whole simulation in thirty seconds.
+
+**Then try:** a bowl of Dirt, a Seed planted in it, and a Light above. Come back in a minute.
+
+**When you want more:** place a Battery, run Wire from it, and put a Lamp at the end. That is your first circuit. Everything electrical builds from there.
+
+Work at your own pace — the simulation runs at whatever speed you set, and can be paused while you build.
+
+---
+
+## Saving and sharing
+
+Boards save to a file you can reload later or pass to someone else.
+
+**Stamps** are the useful part: select any region — a finished circuit, a tree, a whole pinball assembly — and save it to a library. Then stamp it down anywhere, as many times as you like, rotated or mirrored. Anything you build once can become a part you reuse.
+
+---
+
+## A note on how it plays
+
+Nothing here has goals or scores you are asked to chase. It rewards curiosity instead: seal a tank and see whether it really holds, drop a colony of ants into deep sand and come back in ten minutes, wire a light to a switch and then wonder what else you could wire it to.
+
+Most of what the simulation does was never designed directly. Tunnel networks, spoil heaps, the way fire crosses a forest — those emerge from simple rules meeting each other. Half the fun is finding out what happens.
