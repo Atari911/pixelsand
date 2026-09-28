@@ -6,6 +6,8 @@ It begins as a falling-sand toy. Pour sand, flood it with water, set it on fire,
 
 **One file. Open it in a browser. Nothing to install.**
 
+Hosted: https://atari911.net/repo/Pixelsand/pixelsand.html
+
 ---
 
 ## What you can do with it
